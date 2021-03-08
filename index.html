@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Covid19 Statistics</title>
+</head>
+
+<body>
+
+  <h1>Worldwide COVID-19 Data</h1>
+  <div class="spinner"></div>
+  <section class="regionContainer flex">
+    <button class="continent btn" id="africa">Africa</button>
+    <button class="continent btn" id="americas">Americas</button>
+    <button class="continent btn" id="asia">Asia</button>
+    <button class="continent btn" id="europe">Europe</button>
+    <button class="continent btn" id="oceania">Oceania</button>
+    <select name="countries" id="countries"></select>
+  </section>
+
+  <section class="mainSection flex">
+    <div class="chartContainer flexCol">
+      <canvas id="chart"></canvas>
+    </div>
+  </section>
+  <section class="statTypeContainer flex">
+    <button id="total_cases" class="statType btn">Confirmed Cases</button>
+    <button id="total_deaths" class="statType btn">Total Deaths</button>
+    <button id="total_recovered" class="statType btn">Total Recovered</button>
+    <button id="total_critical" class="statType btn">Critical Condition</button>
+  </section>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="scripts/graphs.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+
+</html>
