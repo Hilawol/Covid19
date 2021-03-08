@@ -27,9 +27,9 @@ statTypeBtn.forEach(btn => btn.addEventListener("click", statTypeClick));
 const continents = [];
 let selectedRegion = "africa";
 let selectedStat = "total_cases";
+setSelected(selectedStat, "stat");
 displayContinent(selectedRegion);
-// setSelected(selectedRegion,"continent");
-// setSelected(selectedStat);
+
 
 
 class Continent {
@@ -59,7 +59,7 @@ class Continent {
 }
 
 function setSelected(value, type) {
-  debugger
+  console.log(`setselected:value:${value},type:${type}`);
   let c = ""; //class to add
   if (type === "continent") {
     selectedRegion = value;
@@ -85,18 +85,12 @@ function continentClick(event) {
 async function statTypeClick(event) {
   const id = event.currentTarget.id;
   setSelected(id, "stat");
-  await generateGraph(selectedRegion, id);
-
-  // switch (id) {
-  //   case "total_cases":
-  //   case "total_deaths":
-  //   case "total_recovered":
-  //   case "total_critical":
-  // }
+  let continent = continents.find(c => c.name === selectedRegion);
+  debugger
+  await generateGraph(continent, id);
 }
 
 async function displayContinent(continentName) {
-  debugger
   setSelected(continentName, "continent");
   let continent = continents.find(c => c.name === continentName);
   spinner.classList.add("loading");
@@ -106,7 +100,7 @@ async function displayContinent(continentName) {
   }
   setCountriesList(continent.countries);
   const continentCovidData = await fetchContinentCovidData(continent);
-  generateGraph(continent, "total_deaths");
+  generateGraph(continent, selectedStat);
   spinner.classList.remove("loading");
 }
 
