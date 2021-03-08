@@ -16,12 +16,14 @@ const STATISTIC_TYPES = [{ type: "total_cases", str: "Confirmed Cases" },
 const continentBtns = document.querySelectorAll(".continent");
 const statTypeBtn = document.querySelectorAll(".statType");
 const countriesDDList = document.querySelector("#countries");
+const countryStatDiv = document.querySelector(".countryStat");
 const ctx = document.querySelector("#chart");
 const spinner = document.querySelector(".spinner");
 
 
 continentBtns.forEach(btn => btn.addEventListener("click", continentClick));
 statTypeBtn.forEach(btn => btn.addEventListener("click", statTypeClick));
+countriesDDList.addEventListener("input", countryClick);
 
 // SETUP 
 const continents = [];
@@ -37,7 +39,6 @@ class Continent {
   constructor(name, countries) {
     this.name = name;
     this.countries = countries;
-    // this.currentStat = 
   }
 
   getCountryCode(code) {
@@ -55,6 +56,10 @@ class Continent {
       }
       else return 0;
     });
+  }
+
+  getCountry(country) {
+    return this.countries.find(c => c.name === country);
   }
 }
 
@@ -76,6 +81,30 @@ function setSelected(value, type) {
   }
   element.classList.add(c);
 }
+function countryClick(event) {
+  countryStatDiv.innerHTML = "";
+  const c = event.currentTarget.value;
+  const country = continents.find(c => c.name === selectedRegion).getCountry(c);
+  console.log(country);
+  countryStatDiv.innerHTML = `<div class="countryS">
+  <img src="https://flagpedia.net/data/flags/normal/${country.code.toLowerCase()}.png" alt="flag">
+  <span>${"&nbsp"}${c}</span>
+</div>
+<div class="countryS">
+  <p>Total Cases: ${country.covidData.total_cases}</p>
+  <span>new: +${country.covidData.new_cases}</span>
+</div>
+<div class="countryS">
+  <p>Total Deaths: ${country.covidData.total_deaths}</p>
+  <span>new: +${country.covidData.new_deaths}</span>
+</div>
+<div class="countryS">
+  <p>Total Recovered: ${country.covidData.total_recovered}</p>
+</div>
+<div class="countryS">
+  <p>In Critical Condition: ${country.covidData.total_critical}</p>
+</div>`;
+}
 
 function continentClick(event) {
   const name = event.currentTarget.id;
@@ -86,12 +115,12 @@ async function statTypeClick(event) {
   const id = event.currentTarget.id;
   setSelected(id, "stat");
   let continent = continents.find(c => c.name === selectedRegion);
-  debugger
   await generateGraph(continent, id);
 }
 
 async function displayContinent(continentName) {
   setSelected(continentName, "continent");
+  countryStatDiv.innerHTML = "";
   let continent = continents.find(c => c.name === continentName);
   spinner.classList.add("loading");
   if (!continent) {
@@ -137,16 +166,6 @@ function setCountriesList(countries) {
   })
 }
 
-// async function getCountryStats(countryCode) {
-//   const response = await fetch(proxy + statApiBase + countryCode);
-//   const data = await response.json();
-//   return data;
-// };
-
-
-
-
-
 async function fetchContinentCovidData(continent) {
   const covidApiBase = "http://corona-api.com/countries/";
   for (let i = 0; i < continent.countries.length; i++) {
@@ -168,6 +187,7 @@ async function fetchContinentCovidData(continent) {
 }
 
 const generateGraph = (continent, dataType) => {
+  const label = (STATISTIC_TYPES.find(s => s.type === dataType)).str;
   ctx.innerHTML = "";
   const lables = continent.getCountriesNames();
   const data = continent.getContinentStat(dataType);
@@ -176,7 +196,7 @@ const generateGraph = (continent, dataType) => {
     data: {
       labels: lables,
       datasets: [{
-        label: dataType,
+        label: label,
         data: data,
         backgroundColor: ['rgba(54, 162, 235, 0.2)'],
         borderColor: ['rgba(54, 162, 235, 1)',],
@@ -184,6 +204,8 @@ const generateGraph = (continent, dataType) => {
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       events: ['click'],
       scales: {
         xAxes: [{
