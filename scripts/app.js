@@ -1,6 +1,8 @@
 // const statApiBase = "http://corona-api.com/countries/";
 const covidApiBase = "https://corona-api.com/countries/";
-const proxy = "https://thingproxy.freeboard.io/fetch/";
+const proxy = 'https://api.codetabs.com/v1/proxy/?quest=';
+
+"https://thingproxy.freeboard.io/fetch/";
 // "https://cors-anywhere.herokuapp.com/";
 // "http://alloworigin.com/get?url=";
 // "https://thingproxy.freeboard.io/fetch/";
@@ -142,7 +144,7 @@ async function displayContinent(continentName) {
  */
 async function fetchContinent(continent) {
   const countriesApiBase = "https://restcountries.herokuapp.com/api/v1/region/";
-  const response = await fetch(countriesApiBase + continent);
+  const response = await fetch(proxy + countriesApiBase + continent);
   const continentData = await response.json();
   return continentData;
 };
@@ -172,7 +174,7 @@ function setCountriesList(countries) {
 async function fetchContinentCovidData(continent) {
   const covidApiBase = "https://corona-api.com/countries/";
   for (let i = 0; i < continent.countries.length; i++) {
-    const response = await fetch(covidApiBase + continent.countries[i].code);
+    const response = await fetch(proxy + covidApiBase + continent.countries[i].code);
     if (response.status === 200) { //If response other then 200 - no covid data will be available
       const continentCovidData = await response.json();
       const covidData = {
