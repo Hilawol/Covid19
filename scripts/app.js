@@ -1,5 +1,5 @@
 // const statApiBase = "http://corona-api.com/countries/";
-const covidApiBase = "http://corona-api.com/countries/";
+const covidApiBase = "https://corona-api.com/countries/";
 const proxy = "https://thingproxy.freeboard.io/fetch/";
 // "https://cors-anywhere.herokuapp.com/";
 // "http://alloworigin.com/get?url=";
@@ -81,6 +81,8 @@ function setSelected(value, type) {
   }
   element.classList.add(c);
 }
+
+
 function countryClick(event) {
   countryStatDiv.innerHTML = "";
   const c = event.currentTarget.value;
@@ -117,6 +119,7 @@ async function statTypeClick(event) {
   let continent = continents.find(c => c.name === selectedRegion);
   await generateGraph(continent, id);
 }
+
 
 async function displayContinent(continentName) {
   setSelected(continentName, "continent");
@@ -167,7 +170,7 @@ function setCountriesList(countries) {
 }
 
 async function fetchContinentCovidData(continent) {
-  const covidApiBase = "http://corona-api.com/countries/";
+  const covidApiBase = "https://corona-api.com/countries/";
   for (let i = 0; i < continent.countries.length; i++) {
     const response = await fetch(covidApiBase + continent.countries[i].code);
     if (response.status === 200) { //If response other then 200 - no covid data will be available
@@ -191,6 +194,11 @@ const generateGraph = (continent, dataType) => {
   ctx.innerHTML = "";
   const lables = continent.getCountriesNames();
   const data = continent.getContinentStat(dataType);
+  let skip = false;
+  if (window.matchMedia("(max-width: 700px)").matches) {
+    skip = true;
+  }
+  debugger
   const chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -211,7 +219,7 @@ const generateGraph = (continent, dataType) => {
         xAxes: [{
           ticks: {
             beginAtZero: true,
-            autoSkip: false,
+            autoSkip: skip,
           }
         }]
       }

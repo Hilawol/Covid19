@@ -4,10 +4,6 @@
   padding:0;
 }
 
-body{
-  /* margin:auto; */
-}
-
 h1{
   text-align: center;
   padding: 30px;
@@ -38,6 +34,7 @@ h1{
 
 .chartContainer{
   width: 80vw;
+  height: 60vh;
 }
 
 #countries{
@@ -89,4 +86,48 @@ h1{
 }
 .countryStat:last-child{
   border-right: none;
+}
+
+@media only screen and (max-width: 670px) {
+  .headerContainer{
+    max-width:100vw;
+  }
+
+    #countries{
+      max-width: 100vw;
+      margin:auto;
+    }
+  h1{
+    font-size: medium;
+    padding: 10px;
+  }
+
+  /* .regionContainer{
+
+  } */
+ .mainSection{
+    flex-direction: column;
+    max-width:100vw;
+    height: 20vh;
+    align-items: stretch;
+  }
+
+  .statTypeContainer{
+    flex-direction: row;
+    padding:0;
+    margin:0;
+  }
+
+  .chartContainer{
+    width:100vw;
+    height: 100vh;
+  }
+
+  .btn{
+    flex:1;
+    margin:0;
+    width:100px;
+    max-width:100vw;
+  }
+
 }
