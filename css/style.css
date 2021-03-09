@@ -73,11 +73,17 @@ h1{
 .countryStat{
   padding:30px;
   height: 50px;
+  border-radius: 10px;
+  border:1px solid transparent;
 }
 .countryS{
+  display:flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
   border-right: 1px solid black;
-  height: 50px;
-  padding: 10px 30px;
+  height: 70px;
+  padding: 10px 10px;
   background-color: rgba(54, 162, 235, 0.2);
 }
 .countryS img{
@@ -100,16 +106,15 @@ h1{
   h1{
     font-size: medium;
     padding: 10px;
+    background-color: rgba(54, 162, 235, 0.2);
   }
 
-  /* .regionContainer{
-
-  } */
  .mainSection{
     flex-direction: column;
     max-width:100vw;
-    height: 20vh;
+    height: 100vh;
     align-items: stretch;
+    margin-top: 30px;
   }
 
   .statTypeContainer{
@@ -121,8 +126,30 @@ h1{
   .chartContainer{
     width:100vw;
     height: 100vh;
+    text-align: center;
   }
 
+  .countryStat{
+    padding:0;
+    width:100vw;
+  }
+
+  .countryS{
+    display: flex;
+    flex-direction: column;
+    height:70px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .chartContainerp{
+    margin: auto;
+  }
+
+  .statType{
+    height: 30px;
+  }
   .btn{
     flex:1;
     margin:0;

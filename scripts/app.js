@@ -1,15 +1,5 @@
-// const statApiBase = "http://corona-api.com/countries/";
 const covidApiBase = "https://corona-api.com/countries/";
 const proxy = 'https://api.codetabs.com/v1/proxy/?quest=';
-
-"https://thingproxy.freeboard.io/fetch/";
-// "https://cors-anywhere.herokuapp.com/";
-// "http://alloworigin.com/get?url=";
-// "https://thingproxy.freeboard.io/fetch/";
-// "http://alloworigin.com/get?url=";
-
-
-
 
 const STATISTIC_TYPES = [{ type: "total_cases", str: "Confirmed Cases" },
 { type: "total_deaths", str: "Total Deaths" },
@@ -19,6 +9,7 @@ const continentBtns = document.querySelectorAll(".continent");
 const statTypeBtn = document.querySelectorAll(".statType");
 const countriesDDList = document.querySelector("#countries");
 const countryStatDiv = document.querySelector(".countryStat");
+const chartContainer = document.querySelector(".chartContainer");
 const ctx = document.querySelector("#chart");
 const spinner = document.querySelector(".spinner");
 
@@ -66,7 +57,6 @@ class Continent {
 }
 
 function setSelected(value, type) {
-  console.log(`setselected:value:${value},type:${type}`);
   let c = ""; //class to add
   if (type === "continent") {
     selectedRegion = value;
@@ -89,7 +79,6 @@ function countryClick(event) {
   countryStatDiv.innerHTML = "";
   const c = event.currentTarget.value;
   const country = continents.find(c => c.name === selectedRegion).getCountry(c);
-  console.log(country);
   countryStatDiv.innerHTML = `<div class="countryS">
   <img src="https://flagpedia.net/data/flags/normal/${country.code.toLowerCase()}.png" alt="flag">
   <span>${"&nbsp"}${c}</span>
@@ -124,18 +113,24 @@ async function statTypeClick(event) {
 
 
 async function displayContinent(continentName) {
-  setSelected(continentName, "continent");
-  countryStatDiv.innerHTML = "";
-  let continent = continents.find(c => c.name === continentName);
-  spinner.classList.add("loading");
-  if (!continent) {
-    const continentData = await fetchContinent(continentName);
-    continent = setContinentData(continentName, continentData);
+  try {
+    setSelected(continentName, "continent");
+    countryStatDiv.innerHTML = "";
+    let continent = continents.find(c => c.name === continentName);
+    spinner.classList.add("loading");
+    if (!continent) {
+      const continentData = await fetchContinent(continentName);
+      continent = setContinentData(continentName, continentData);
+    }
+    setCountriesList(continent.countries);
+    const continentCovidData = await fetchContinentCovidData(continent);
+    generateGraph(continent, selectedStat);
+    spinner.classList.remove("loading");
+  } catch (error) {
+    console.log(error);
+    spinner.classList.remove("loading");
+    chartContainer.innerHTML = "<p><strong>Failed To Load Data</strong></p>";
   }
-  setCountriesList(continent.countries);
-  const continentCovidData = await fetchContinentCovidData(continent);
-  generateGraph(continent, selectedStat);
-  spinner.classList.remove("loading");
 }
 
 /**
@@ -147,7 +142,7 @@ async function fetchContinent(continent) {
   const response = await fetch(proxy + countriesApiBase + continent);
   const continentData = await response.json();
   return continentData;
-};
+}
 
 function setContinentData(name, continentData) {
   const countries = continentData.map(country => { return { name: country.name.common, code: country.cca2, }; });
@@ -176,19 +171,21 @@ async function fetchContinentCovidData(continent) {
   for (let i = 0; i < continent.countries.length; i++) {
     const response = await fetch(proxy + covidApiBase + continent.countries[i].code);
     if (response.status === 200) { //If response other then 200 - no covid data will be available
+
       const continentCovidData = await response.json();
-      const covidData = {
-        total_cases: continentCovidData.data.latest_data.confirmed,
-        total_deaths: continentCovidData.data.latest_data.deaths,
-        total_recovered: continentCovidData.data.latest_data.recovered,
-        total_critical: continentCovidData.data.latest_data.critical,
-        new_cases: continentCovidData.data.today.confirmed,
-        new_deaths: continentCovidData.data.today.deaths,
+      if (continentCovidData.data) {
+        const covidData = {
+          total_cases: continentCovidData.data.latest_data.confirmed,
+          total_deaths: continentCovidData.data.latest_data.deaths,
+          total_recovered: continentCovidData.data.latest_data.recovered,
+          total_critical: continentCovidData.data.latest_data.critical,
+          new_cases: continentCovidData.data.today.confirmed,
+          new_deaths: continentCovidData.data.today.deaths,
+        }
+        continent.countries[i].covidData = covidData;
       }
-      continent.countries[i].covidData = covidData;
     }
   }
-  console.log(continent);
 }
 
 const generateGraph = (continent, dataType) => {
@@ -200,7 +197,6 @@ const generateGraph = (continent, dataType) => {
   if (window.matchMedia("(max-width: 700px)").matches) {
     skip = true;
   }
-  debugger
   const chart = new Chart(ctx, {
     type: 'line',
     data: {

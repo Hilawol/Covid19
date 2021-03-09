@@ -21,6 +21,12 @@
       <button class="continent btn" id="oceania">Oceania</button>
       <select name="countries" id="countries"></select>
     </section>
+    <section class="statTypeContainer flex">
+      <button id="total_cases" class="statType btn">Confirmed Cases</button>
+      <button id="total_deaths" class="statType btn">Total Deaths</button>
+      <button id="total_recovered" class="statType btn">Total Recovered</button>
+      <button id="total_critical" class="statType btn">Critical Condition</button>
+    </section>
     <section class="countryStat flex">
     </section>
   </div>
@@ -29,12 +35,7 @@
     <div class="chartContainer flexCol">
       <canvas id="chart"></canvas>
     </div>
-    <section class="statTypeContainer flexCol">
-      <button id="total_cases" class="statType btn">Confirmed Cases</button>
-      <button id="total_deaths" class="statType btn">Total Deaths</button>
-      <button id="total_recovered" class="statType btn">Total Recovered</button>
-      <button id="total_critical" class="statType btn">Critical Condition</button>
-    </section>
+
   </section>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
